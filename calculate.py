@@ -54,11 +54,10 @@ def simplify(matrix: np.ndarray) -> np.ndarray:
         """
         nonlocal global_best_transaction_count, global_best_transactions
 
-        if len(transactions) >= global_best_transaction_count:
-            return
-        if len(positives) == 0 and len(negatives) == 0:
-            global_best_transaction_count = len(transactions)
-            global_best_transactions = transactions
+        if len(positives) == 0 and len(negatives) == 0 or len(transactions) >= global_best_transaction_count:
+            if len(transactions) < global_best_transaction_count:
+                global_best_transaction_count = len(transactions)
+                global_best_transactions = transactions
             return
         
         for i in range(len(positives)):
