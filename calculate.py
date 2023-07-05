@@ -1,70 +1,51 @@
 from typing import List
 import numpy as np
 from collections import defaultdict
-import networkx as nx
-
-def simplify_matrix_min_transactions(mat):
-    n = mat.shape[0]
-    simplified_mat = np.copy(mat)
-
-    # Step 1: Create a directed graph and add edges based on matrix values
-    G = nx.DiGraph()
-    for i in range(n):
-        for j in range(n):
-            if i != j and simplified_mat[i, j] > 0:
-                G.add_edge(i, j, weight=simplified_mat[i, j])
-
-    # Step 2: Use the Floyd-Warshall algorithm to find the shortest paths
-    path_lengths = nx.floyd_warshall_numpy(G, weight='weight')
-
-    # Step 3: Generate the simplified matrix with minimum transactions
-    simplified_mat_min_transactions = np.zeros((n, n))
-    for i in range(n):
-        for j in range(n):
-            if i != j:
-                min_amount = simplified_mat[i, j]
-                min_path = nx.shortest_path(G, i, j, weight='weight')
-                for k in range(len(min_path) - 1):
-                    u = min_path[k]
-                    v = min_path[k + 1]
-                    min_amount = min(min_amount, simplified_mat[u, v])
-                simplified_mat_min_transactions[i, j] = min_amount
-
-    return simplified_mat_min_transactions
 
 
 def _simplify(matrix: np.ndarray) -> np.ndarray:
-    """ Simplify a debt matrix to reduce the number of transactions.
-
-    This function takes in a debt matrix and simplifies it by reducing the number of transactions needed to balance the debt.
+    """ Simplify a matrix to reduce the number of transactions needed.
 
     Args:
-        matrix (np.ndarray): an upper triangular 2D NumPy array representing the debt matrix
-    
+        matrix (np.ndarray): a square 2D NumPy matrix
+
     Returns:
-        A simplified version of the inputted matrix
+        A simplified version of the matrix, where the lower triangular part is zeroed out.
     """
     balances = defaultdict(float)
-    for i in range(matrix.shape[0]):
-        for j in range(i + 1, matrix.shape[1]):
-            balances[j] += matrix[i, j]
+    n = matrix.shape[0]
+    for i in range(n):
+        for j in range(i + 1, n):
             balances[i] -= matrix[i, j]
-    print(balances)
+            balances[j] += matrix[i, j]
     
-    zeros = [i for i, balance in balances.items() if balance == 0]
-    for i in zeros:
-        matrix[i, :] = 0
-        matrix[:, i] = 0
 
-    positives = [i for i, balance in balances.items() if balance > 0]
-    negatives = [i for i, balance in balances.items() if balance < 0]
 
-    for i in positives:
-        for j in negatives:
-            # if the positive balance can take on the negative balance:
-            if balances[i] + balances[j] > 0:
-                pass
-    return matrix
+def _dfs(positives, negatives, transactions):
+    if len(positives) == 0 and len(negatives) == 0:
+        return transactions
+    
+    best_transaction_count = float('inf')
+    best_transaction = None
+    for i in range(len(positives)):
+        for j in range(len(negatives)):
+            pamt, pperson = positives[i]
+            namt, nperson = negatives[j]
+            if pamt == -namt: # find 2 equal transactions
+                new_transactions = _dfs(positives[:i] + positives[i + 1:], negatives[:j] + negatives[j + 1:], transactions + [(pperson, nperson, pamt)])
+            elif pamt > -namt: # positive is overpaying
+                positives[i][0] += namt
+                new_transactions = _dfs(positives, negatives[:j] + negatives[j + 1:], transactions + [(pperson, nperson, namt)])
+                positives[i][0] -= namt
+            else: # negative is overpaying
+                negatives[j][0] += pamt
+                new_transactions = _dfs(positives[:i] + positives[i + 1:], negatives, transactions + [(pperson, nperson, pamt)])
+                negatives[j][0] -= pamt
+            if len(new_transactions) < best_transaction_count:
+                best_transaction_count = len(new_transactions)
+                best_transaction = new_transactions
+    return best_transaction
+    
 
 
 
@@ -125,12 +106,12 @@ def main():
     involved = [["A", "B", "C"], ["A", "B", "C"], ["A", "B", "C"]]
     matrix = np.array(
         [
-            [10, 30],
-            [0, 20],
+            [0, 10, 30],
+            [0, 0, 20],
+            [0, 0, 0]
         ]
     )
     print(_simplify(matrix))
-    print(simplify_matrix_min_transactions(matrix))
 
 
 if __name__ == "__main__":
