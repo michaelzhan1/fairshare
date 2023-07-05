@@ -1,9 +1,31 @@
-from typing import List
+from typing import List, Union, Dict, Tuple
 import numpy as np
 from collections import defaultdict
 
 
-def _simplify(matrix: np.ndarray) -> np.ndarray:
+def _generate_debt_lists(matrix: np.ndarray) -> Tuple[List[Union[float, int]]]:
+    """ Generate lists of credits and debts from a matrix.
+
+    This function takes an upper triangular matrix, where each element represents how much the row person owes the column person.
+
+    Args:
+        matrix (np.ndarray): an upper triangular 2D NumPy matrix
+
+    Returns:
+        A tuple of two lists. The first list contains a list of lists of the form [amount, person] indicating the amount that a person is owed. The second list contains a list of lists of the form [amount, person] indicating the amount that a person owes, where the amount is negative.
+    """
+    balances = defaultdict(float)
+    n = matrix.shape[0]
+    for i in range(n):
+        for j in range(i + 1, n):
+            balances[i] -= matrix[i, j]
+            balances[j] += matrix[i, j]
+    positives = [[amt, person] for person, amt in balances.items() if amt > 0]
+    negatives = [[amt, person] for person, amt in balances.items() if amt < 0]
+    return positives, negatives
+
+
+def simplify(matrix: np.ndarray) -> np.ndarray:
     """ Simplify a matrix to reduce the number of transactions needed.
 
     Args:
@@ -12,43 +34,55 @@ def _simplify(matrix: np.ndarray) -> np.ndarray:
     Returns:
         A simplified version of the matrix, where the lower triangular part is zeroed out.
     """
-    balances = defaultdict(float)
-    n = matrix.shape[0]
-    for i in range(n):
-        for j in range(i + 1, n):
-            balances[i] -= matrix[i, j]
-            balances[j] += matrix[i, j]
+    positives, negatives = _generate_debt_lists(matrix)
     
-
-
-def _dfs(positives, negatives, transactions):
-    if len(positives) == 0 and len(negatives) == 0:
-        return transactions
+    global_best_transaction_count = float('inf')
+    global_best_transactions = None
     
-    best_transaction_count = float('inf')
-    best_transaction = None
-    for i in range(len(positives)):
-        for j in range(len(negatives)):
-            pamt, pperson = positives[i]
-            namt, nperson = negatives[j]
-            if pamt == -namt: # find 2 equal transactions
-                new_transactions = _dfs(positives[:i] + positives[i + 1:], negatives[:j] + negatives[j + 1:], transactions + [(pperson, nperson, pamt)])
-            elif pamt > -namt: # positive is overpaying
-                positives[i][0] += namt
-                new_transactions = _dfs(positives, negatives[:j] + negatives[j + 1:], transactions + [(pperson, nperson, namt)])
-                positives[i][0] -= namt
-            else: # negative is overpaying
-                negatives[j][0] += pamt
-                new_transactions = _dfs(positives[:i] + positives[i + 1:], negatives, transactions + [(pperson, nperson, pamt)])
-                negatives[j][0] -= pamt
-            if len(new_transactions) < best_transaction_count:
-                best_transaction_count = len(new_transactions)
-                best_transaction = new_transactions
-    return best_transaction
+    def update_best_transactions(positives: List[List[Union[float, int]]], negatives: List[List[Union[float, int]]], transactions: List[List[Union[float, int]]]) -> None:
+        """ Finds the smallest number of transactions needed to settle the debts, and the transactions needed to do so.
+
+        This function recursively finds the smallest number of transactions needed to settle the debts, and the transactions needed to do so. It does so by trying all possible combinations of transactions, and keeping track of the best one using a nonlocal variable.
+
+        Args:
+            positives (List[List[Union[float, int]]]): a list of lists of the form [amount, person] indicating the amount that a person is owed
+            negatives (List[List[Union[float, int]]]): a list of lists of the form [amount, person] indicating the amount that a person owes, where the amount is negative
+            transactions (List[List[Union[float, int]]]): a list of lists of the form [person1, person2, amount] indicating a transaction where person1 pays person2 the amount
+        
+        Returns:
+            None
+        """
+        nonlocal global_best_transaction_count, global_best_transactions
+        if len(transactions) >= global_best_transaction_count:
+            return
+        if len(positives) == 0 and len(negatives) == 0:
+            global_best_transaction_count = len(transactions)
+            global_best_transactions = transactions
+            return
+        
+        for i in range(len(positives)):
+            for j in range(len(negatives)):
+                pamt, pperson = positives[i]
+                namt, nperson = negatives[j]
+                if pamt == -namt: # find 2 equal transactions
+                    update_best_transactions(positives[:i] + positives[i + 1:], negatives[:j] + negatives[j + 1:], transactions + [(nperson, pperson, pamt)])
+                elif pamt > -namt: # negative cannot pay full amount
+                    positives[i][0] += namt
+                    update_best_transactions(positives, negatives[:j] + negatives[j + 1:], transactions + [(nperson, pperson, -namt)])
+                    positives[i][0] -= namt
+                else: # negative can pay full amount and more
+                    negatives[j][0] += pamt
+                    update_best_transactions(positives[:i] + positives[i + 1:], negatives, transactions + [(nperson, pperson, pamt)])
+                    negatives[j][0] -= pamt
+        return
+
+    update_best_transactions(positives, negatives, [])
+    new_matrix = np.zeros_like(matrix)
+    for nperson, pperson, amt in global_best_transactions:
+        new_matrix[nperson, pperson] += amt
+    return new_matrix
+        
     
-
-
-
 def calculate(persons: List[str], expenses: List[float], paid_by: List[str], involved: List[List[str]]) -> np.ndarray:
     """ Calculate how much each person owes or is owed, based on inputted payments.
 
@@ -95,23 +129,16 @@ def calculate(persons: List[str], expenses: List[float], paid_by: List[str], inv
         for j in range(i):
             matrix[j, i] -= matrix[i, j]
             matrix[i, j] = 0
-
     return matrix
 
 
 def main():
-    persons = ["A", "B", "C"]
-    expenses = [30, 60, 90]
-    paid_by = ["A", "B", "C"]
-    involved = [["A", "B", "C"], ["A", "B", "C"], ["A", "B", "C"]]
-    matrix = np.array(
-        [
-            [0, 10, 30],
-            [0, 0, 20],
-            [0, 0, 0]
-        ]
-    )
-    print(_simplify(matrix))
+    persons = ["A", "B", "C", "D", "E", "F"]
+    expenses = [6, 2, 12, 8, 22]
+    paid_by = ["D", "D", "E", 'E', 'F']
+    involved = [["A", "D"], ["B", "D"], ['B', 'E'], ['C', 'E'], ['C', 'F']]
+    print(calculate(persons, expenses, paid_by, involved))
+    print(simplify(calculate(persons, expenses, paid_by, involved)))
 
 
 if __name__ == "__main__":
