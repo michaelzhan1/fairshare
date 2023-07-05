@@ -29,10 +29,10 @@ def simplify(matrix: np.ndarray) -> np.ndarray:
     """ Simplify a matrix to reduce the number of transactions needed.
 
     Args:
-        matrix (np.ndarray): a square 2D NumPy matrix
+        matrix (np.ndarray): an upper triangular square 2D NumPy matrix
 
     Returns:
-        A simplified version of the matrix, where the lower triangular part is zeroed out.
+        A simplified version of the matrix, where the number of transactions needed to settle the debts is minimized.
     """
     positives, negatives = _generate_debt_lists(matrix)
     
@@ -53,6 +53,7 @@ def simplify(matrix: np.ndarray) -> np.ndarray:
             None
         """
         nonlocal global_best_transaction_count, global_best_transactions
+
         if len(transactions) >= global_best_transaction_count:
             return
         if len(positives) == 0 and len(negatives) == 0:
