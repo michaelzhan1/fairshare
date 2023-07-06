@@ -22,15 +22,89 @@
     <h1>FairShare</h1>
     <h3>Expense splitting calculator for groups!</h3>
   </header>
-  <div class="container d-flex justify-content-center" id="button-row">
-    <button type="button" id="new-payment-btn" class="btn btn-secondary me-3">Add payment</button>
+  <div class="container d-flex justify-content-center mb-3" id="button-row">
+    <button type="button" id="new-payment-btn" class="btn btn-secondary me-3" onclick="openForm2()">Add payment</button>
     <button type="button" id="calculate-btn" class="btn btn-secondary me-3">Calculate</button>
-    <button type="button" id="new-person-btn" class="btn btn-secondary me-3">Add person</button>
+    <button type="button" id="new-person-btn" class="btn btn-secondary me-3" onclick="openForm()">Add person</button>
   </div>
   <div class="container" id="main">
-    
+    <table class="table table-striped table-hover bg-white">
+      <thead id="table-header">
+        <tr>
+          <th></th>
+          <th scope="col">Name</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+      </tbody>
   </div>
 
+  <!-- Popup to add person to table -->
+  <div class="form-container" id="add-person-form">
+    <div class="form-popup">
+      <span class="close" onclick="closeForm()">&times;</span>
+      <form action="/">
+        <label for="name">Enter a new person:</label>
+        <input type="text" id="name" placeholder="Name">
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Popup to add payment to table -->
+  <div class="form-container" id="add-payment-form">
+    <div class="form-popup">
+      <span class="close" onclick="closeForm2()">&times;</span>
+      <form action="/">
+        <label for="amount">Enter payment amount:</label>
+        <input type="text" name="amount" placeholder="Amount">
+        <label for="involved">Select people involved in payment:</label>
+        <fieldset name="involved">
+          <input type="checkbox" id="person1" name="person" value="person1">
+          <label for="person1">Person 1</label><br>
+          <input type="checkbox" id="person2" name="person" value="person2">
+          <label for="person2">Person 2</label><br>
+          <input type="checkbox" id="person3" name="person" value="person3">
+          <label for="person3">Person 3</label><br>
+        </fieldset>
+        <label for="payer">Choose who paid:</label>
+        <select name="payer">
+          <option value="person1">Person 1</option>
+          <option value="person2">Person 2</option>
+          <option value="person3">Person 3</option>
+        </select>
+        
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Open the form
+    function openForm() {
+      document.getElementById("add-person-form").style.display = "block";
+    }
+
+    // Close the form
+    function closeForm() {
+      document.getElementById("add-person-form").style.display = "none";
+    }
+
+    // Open the form
+    function openForm2() {
+      document.getElementById("add-payment-form").style.display = "block";
+    }
+
+    // Close the form
+    function closeForm2() {
+      document.getElementById("add-payment-form").style.display = "none";
+    }
+  </script>
+
+
+  <!-- Custom JS -->
+  <script src="../static/js/scripts.js"></script>
 
   <!-- Bootstrap JavaScript Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
