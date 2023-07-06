@@ -25,7 +25,7 @@ def _generate_debt_lists(matrix: np.ndarray) -> Tuple[List[Union[float, int]]]:
     return positives, negatives
 
 
-def simplify(matrix: np.ndarray) -> np.ndarray:
+def _simplify(matrix: np.ndarray) -> np.ndarray:
     """ Simplify a matrix to reduce the number of transactions needed.
 
     Args:
@@ -83,7 +83,7 @@ def simplify(matrix: np.ndarray) -> np.ndarray:
     return new_matrix
         
     
-def calculate(persons: List[str], expenses: List[float], paid_by: List[str], involved: List[List[str]]) -> np.ndarray:
+def _calculate(persons: List[str], expenses: List[float], paid_by: List[str], involved: List[List[str]]) -> np.ndarray:
     """ Calculate how much each person owes or is owed, based on inputted payments.
 
     This function takes in payment information (who paid, who was involved, how much was paid), and calculates how much each person owes each other.
@@ -129,7 +129,31 @@ def calculate(persons: List[str], expenses: List[float], paid_by: List[str], inv
         for j in range(i):
             matrix[j, i] -= matrix[i, j]
             matrix[i, j] = 0
-    return matrix
+    return _simplify(matrix)
+
+
+def calculate_debts(persons: List[str], expenses: List[float], paid_by: List[str], involved: List[List[str]]) -> List[List[Union[str, float]]]:
+    """ Wrapper for _calculate that returns a more easily parsable list of debts.
+
+    This function takes in payment information (who paid, who was involved, how much was paid), and calculates how much each person owes each other.
+
+    Args:
+        persons (List[str]): a list of names of all people involved in the payments
+        expenses (List[float]): a list of the amounts paid for each expense
+        paid_by (List[str]): a list of names of the people who paid for each expense
+        involved (List[List[str]]): a list of lists of names of people involved in each expense, including the person who paid
+
+    Returns:
+        A list of lists of the form [person1, person2, amount] indicating that person1 owes person2 the amount
+    """
+    debt_matrix = _calculate(persons, expenses, paid_by, involved)
+    n = debt_matrix.shape[0]
+    debts = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            if debt_matrix[i, j] != 0:
+                debts.append([persons[i], persons[j], debt_matrix[i, j]])
+    return debts
 
 
 def main():
@@ -137,8 +161,9 @@ def main():
     expenses = [6, 2, 12, 8, 22]
     paid_by = ["D", "D", "E", 'E', 'F']
     involved = [["A", "D"], ["B", "D"], ['B', 'E'], ['C', 'E'], ['C', 'F']]
-    print(calculate(persons, expenses, paid_by, involved))
-    print(simplify(calculate(persons, expenses, paid_by, involved)))
+    debts = calculate_debts(persons, expenses, paid_by, involved)
+    for f, t, amt in debts:
+        print(f"{f} owes {t} ${amt:.2f}")
 
 
 if __name__ == "__main__":
