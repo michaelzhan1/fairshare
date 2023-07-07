@@ -45,7 +45,7 @@
       <span class="close">&times;</span>
       <form action="/add_person" method="post" id="add-person-form">
         <label for="new-person-name">Enter a new person:</label>
-        <input type="text" id="new-person-name" name="name" placeholder="Name">
+        <input type="text" id="new-person-name" name="name" placeholder="Name" autocomplete="off">
         <button type="submit">Submit</button>
       </form>
     </div>
@@ -57,22 +57,13 @@
       <span class="close"">&times;</span>
       <form action="/" method="post" id="add-payment-form">
         <label for="amount">Enter payment amount:</label>
-        <input type="text" name="amount" placeholder="Amount">
-        <label for="involved">Select people involved in payment:</label>
-        <fieldset name="involved">
-          <input type="checkbox" id="person1" name="person" value="person1">
-          <label for="person1">Person 1</label><br>
-          <input type="checkbox" id="person2" name="person" value="person2">
-          <label for="person2">Person 2</label><br>
-          <input type="checkbox" id="person3" name="person" value="person3">
-          <label for="person3">Person 3</label><br>
+        <input type="text" name="amount" id="amount" placeholder="Amount">
+        <fieldset name="involved" id="choose-involved">
+          <legend>Select people involved in payment:</legend>
         </fieldset>
-        <label for="payer">Choose who paid:</label>
-        <select name="payer">
+        <label for="choose-payer-select">Choose who paid:</label>
+        <select name="payer" id="choose-payer-select">
           <option disabled selected>--</option>
-          <option value="person1">Person 1</option>
-          <option value="person2">Person 2</option>
-          <option value="person3">Person 3</option>
         </select>
         
 

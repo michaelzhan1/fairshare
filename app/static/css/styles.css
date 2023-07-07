@@ -49,4 +49,14 @@ body {
     border: none;
     cursor: pointer;
     width: 100%;
+    margin-top: 10px;
+}
+
+#choose-involved input {
+    margin-right: 5px;
+}
+
+#choose-involved legend {
+    font-size: 15px;
+    font-weight: bold;
 }
