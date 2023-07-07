@@ -18,6 +18,18 @@ def add_person():
     return redirect('/')
 
 
+@app.route('/add_payment', methods=['POST', 'GET'])
+def add_payment():
+    if request.method == 'POST':
+        print(request.form)
+        amount = float(request.form['amount'])
+        payer = request.form['payer']
+        involved = request.form.getlist('involved')
+        print(involved)
+    return 'test'
+    # return redirect('/')
+
+
 @app.route('/get_people', methods=['GET'])
 def get_people():
     people = db.session.query(People.name).all()

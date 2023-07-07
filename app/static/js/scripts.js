@@ -11,10 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const addPaymentForm = document.getElementById('add-payment-form');
   const addPersonForm = document.getElementById('add-person-form');
 
-  // payment form inputs
-  const chooseInvolved = document.getElementById('choose-involved');
-  const choosePayer = document.getElementById('choose-payer-select');
-
 
   // functions
   async function getPeople() {
@@ -24,52 +20,103 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 
-  // Event listeners
-  // Open forms
-  newPaymentBtn.addEventListener('click', function() {
-    addPaymentFormContainer.style.display = 'block';
-
-    // Populate involved people
+  // populate choose involved checklist
+  function populateChecklistWithPeople(element) {
     getPeople().then(people => {
-      chooseInvolved.innerHTML = '<legend>Select people involved in payment:</legend>';
+      element.innerHTML = '<legend>Select people involved in payment:</legend>';
       let i = 0;
       people.forEach(person => {
         let option = document.createElement('input');
         option.type = 'checkbox';
-        option.value = person;
-        option.name = 'involved';
         option.id = `person${i++}`;
-        chooseInvolved.appendChild(option);
+        option.name = 'involved';
+        option.value = person;
+        
+        
+        element.appendChild(option);
 
         let label = document.createElement('label');
         label.htmlFor = option.id;
         label.textContent = person;
-        chooseInvolved.appendChild(label);
+        element.appendChild(label);
 
         let br = document.createElement('br');
-        chooseInvolved.appendChild(br);
+        element.appendChild(br);
       });
     });
+  }
+
+
+  // populate choose payer dropdown
+  function populatePayerDropdown(element, people) {
+    element.innerHTML = '<option disabled selected>--</option>';
+
+    let involved = people.querySelectorAll('input:checked');
+    involved.forEach(person => {
+      let option = document.createElement('option');
+      option.value = person.value;
+      option.textContent = person.value;
+      element.appendChild(option);
+    });
+  }
+
+
+  // Event listeners
+  // Open forms
+  newPaymentBtn.addEventListener('click', async function() {
+    addPaymentFormContainer.style.display = 'block';
+    addPaymentForm.innerHTML = '';
+
+    let paymentAmount = document.createElement('input');
+    paymentAmount.type = 'text';
+    paymentAmount.name = 'amount';
+    paymentAmount.id = 'payment-amount';
+    paymentAmount.placeholder = 'Amount';
+    paymentAmount.required = true;
+
+    let paymentAmountLabel = document.createElement('label');
+    paymentAmountLabel.htmlFor = paymentAmount.id;
+    paymentAmountLabel.textContent = 'Amount:';
+
+    let chooseInvolved = document.createElement('fieldset');
+    chooseInvolved.id = 'choose-involved';
+    populateChecklistWithPeople(chooseInvolved)
+
+    let chooseInvolvedLabel = document.createElement('label');
+    chooseInvolvedLabel.htmlFor = chooseInvolved.id;
+    chooseInvolvedLabel.textContent = 'Involved:';
+
+    let choosePayer = document.createElement('select');
+    choosePayer.name = 'payer';
+    choosePayer.id = 'choose-payer';
+    choosePayer.required = true;
+    choosePayer.innerHTML = '<option disabled selected>--</option>';
+
+    let choosePayerLabel = document.createElement('label');
+    choosePayerLabel.htmlFor = choosePayer.id;
+    choosePayerLabel.textContent = 'Payer:';
+
+    chooseInvolved.addEventListener('change', function() {
+      populatePayerDropdown(choosePayer, chooseInvolved);
+    });
+
+    let submitBtn = document.createElement('button');
+    submitBtn.type = 'submit';
+    submitBtn.textContent = 'Submit';
+
+    addPaymentForm.appendChild(paymentAmountLabel);
+    addPaymentForm.appendChild(paymentAmount);
+    addPaymentForm.appendChild(chooseInvolvedLabel);
+    addPaymentForm.appendChild(chooseInvolved);
+    addPaymentForm.appendChild(choosePayerLabel);
+    addPaymentForm.appendChild(choosePayer);
+    addPaymentForm.appendChild(submitBtn);
   });
 
   // Open person add form
   newPersonBtn.addEventListener('click', function() {
     addPersonFormContainer.style.display = 'block';
   });
-
-  // Update payer select dropdown on selecting people involved
-  chooseInvolved.addEventListener('change', function() {
-    choosePayer.innerHTML = '<option disabled selected>--</option>';
-
-    let involved = document.querySelectorAll('input[name="involved"]:checked');
-    involved.forEach(person => {
-      let option = document.createElement('option');
-      option.value = person.value;
-      option.textContent = person.value;
-      choosePayer.appendChild(option);
-    });
-  });
-
 
   // Close forms
   addPaymentFormContainer.addEventListener('click', function(e) {

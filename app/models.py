@@ -18,4 +18,6 @@ class Payments(db.Model):
 
 
 with app.app_context():
+    # db.reflect()
+    # db.drop_all()
     db.create_all()

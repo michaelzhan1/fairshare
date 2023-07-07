@@ -54,19 +54,16 @@
   <!-- Popup to add payment to table -->
   <div class="form-container" id="add-payment-form-container">
     <div class="form-popup">
-      <span class="close"">&times;</span>
-      <form action="/" method="post" id="add-payment-form">
+      <span class="close">&times;</span>
+      <form action="/add_payment" method="get" id="add-payment-form">
         <label for="amount">Enter payment amount:</label>
         <input type="text" name="amount" id="amount" placeholder="Amount">
-        <fieldset name="involved" id="choose-involved">
-          <legend>Select people involved in payment:</legend>
-        </fieldset>
+        <div id="choose-involved">
+        </div>
         <label for="choose-payer-select">Choose who paid:</label>
         <select name="payer" id="choose-payer-select">
           <option disabled selected>--</option>
         </select>
-        
-
         <button type="submit">Submit</button>
       </form>
     </div>
