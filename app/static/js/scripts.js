@@ -3,7 +3,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const newPaymentBtn = document.getElementById('new-payment-btn');
   const newPersonBtn = document.getElementById('new-person-btn');
 
-  // pop up forms
+  // pop up form containers
+  const addPaymentFormContainer = document.getElementById('add-payment-form-container');
+  const addPersonFormContainer = document.getElementById('add-person-form-container');
+
+  // forms
   const addPaymentForm = document.getElementById('add-payment-form');
   const addPersonForm = document.getElementById('add-person-form');
 
@@ -11,27 +15,50 @@ document.addEventListener('DOMContentLoaded', function() {
   // Event listeners
   // Open forms
   newPaymentBtn.addEventListener('click', function() {
-    addPaymentForm.style.display = 'block';
-    addPaymentForm.addEventListener('click', outsideClick);
+    addPaymentFormContainer.style.display = 'block';
   });
 
   newPersonBtn.addEventListener('click', function() {
-    addPersonForm.style.display = 'block';
-    addPersonForm.addEventListener('click', outsideClick);
+    addPersonFormContainer.style.display = 'block';
   });
 
   // Close forms
-  addPaymentForm.addEventListener('click', function(e) {
-    let formPopup = addPaymentForm.querySelector('.form-popup');
+  addPaymentFormContainer.addEventListener('click', function(e) {
+    let formPopup = addPaymentFormContainer.querySelector('.form-popup');
     if (e.target.classList.contains('close') || !formPopup.contains(e.target)) {
-      addPaymentForm.style.display = 'none';
+      addPaymentFormContainer.style.display = 'none';
     }
   });
 
-  addPersonForm.addEventListener('click', function(e) {
-    let formPopup = addPersonForm.querySelector('.form-popup');
+  addPersonFormContainer.addEventListener('click', function(e) {
+    let formPopup = addPersonFormContainer.querySelector('.form-popup');
     if (e.target.classList.contains('close') || !formPopup.contains(e.target)) {
-      addPersonForm.style.display = 'none';
+      addPersonFormContainer.style.display = 'none';
     }
+  });
+
+
+  async function getPeople() {
+    let response = await fetch('/get_people');
+    let data = await response.json();
+    return data.names;
+  }
+
+
+  // Validate person submission
+  addPersonForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    let name = document.getElementById('new-person-name').value;
+    if (name === '') {
+      alert('Please enter a name');
+      return;
+    }
+    getPeople().then(people => {
+      if (people.includes(name)) {
+        alert('That name already exists');
+        return;
+      }
+      addPersonForm.submit();
+    });
   });
 });

@@ -40,22 +40,22 @@
   </div>
 
   <!-- Popup to add person to table -->
-  <div class="form-container" id="add-person-form">
+  <div class="form-container" id="add-person-form-container">
     <div class="form-popup">
       <span class="close">&times;</span>
-      <form action="/" method="post">
-        <label for="name">Enter a new person:</label>
-        <input type="text" id="name" placeholder="Name">
+      <form action="/add_person" method="post" id="add-person-form">
+        <label for="new-person-name">Enter a new person:</label>
+        <input type="text" id="new-person-name" name="name" placeholder="Name">
         <button type="submit">Submit</button>
       </form>
     </div>
   </div>
 
   <!-- Popup to add payment to table -->
-  <div class="form-container" id="add-payment-form">
+  <div class="form-container" id="add-payment-form-container">
     <div class="form-popup">
       <span class="close"">&times;</span>
-      <form action="/" method="post">
+      <form action="/" method="post" id="add-payment-form">
         <label for="amount">Enter payment amount:</label>
         <input type="text" name="amount" placeholder="Amount">
         <label for="involved">Select people involved in payment:</label>
@@ -69,6 +69,7 @@
         </fieldset>
         <label for="payer">Choose who paid:</label>
         <select name="payer">
+          <option disabled selected>--</option>
           <option value="person1">Person 1</option>
           <option value="person2">Person 2</option>
           <option value="person3">Person 3</option>
