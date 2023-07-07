@@ -68,11 +68,13 @@ document.addEventListener('DOMContentLoaded', function() {
     addPaymentForm.innerHTML = '';
 
     let paymentAmount = document.createElement('input');
-    paymentAmount.type = 'text';
+    paymentAmount.type = 'number';
     paymentAmount.name = 'amount';
     paymentAmount.id = 'payment-amount';
     paymentAmount.placeholder = 'Amount';
     paymentAmount.required = true;
+    paymentAmount.step = '0.01';
+    paymentAmount.min = '0.01';
 
     let paymentAmountLabel = document.createElement('label');
     paymentAmountLabel.htmlFor = paymentAmount.id;
@@ -82,10 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
     chooseInvolved.id = 'choose-involved';
     populateChecklistWithPeople(chooseInvolved)
 
-    let chooseInvolvedLabel = document.createElement('label');
-    chooseInvolvedLabel.htmlFor = chooseInvolved.id;
-    chooseInvolvedLabel.textContent = 'Involved:';
-
     let choosePayer = document.createElement('select');
     choosePayer.name = 'payer';
     choosePayer.id = 'choose-payer';
@@ -94,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let choosePayerLabel = document.createElement('label');
     choosePayerLabel.htmlFor = choosePayer.id;
-    choosePayerLabel.textContent = 'Payer:';
+    choosePayerLabel.textContent = 'Payer: ';
 
     chooseInvolved.addEventListener('change', function() {
       populatePayerDropdown(choosePayer, chooseInvolved);
@@ -104,11 +102,14 @@ document.addEventListener('DOMContentLoaded', function() {
     submitBtn.type = 'submit';
     submitBtn.textContent = 'Submit';
 
+    let lineBreak = document.createElement('br');
+
     addPaymentForm.appendChild(paymentAmountLabel);
     addPaymentForm.appendChild(paymentAmount);
-    addPaymentForm.appendChild(chooseInvolvedLabel);
+    addPaymentForm.appendChild(lineBreak);
     addPaymentForm.appendChild(chooseInvolved);
     addPaymentForm.appendChild(choosePayerLabel);
+    addPaymentForm.appendChild(lineBreak);
     addPaymentForm.appendChild(choosePayer);
     addPaymentForm.appendChild(submitBtn);
   });

@@ -59,4 +59,6 @@ body {
 #choose-involved legend {
     font-size: 15px;
     font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 0;
 }

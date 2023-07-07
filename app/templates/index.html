@@ -55,16 +55,7 @@
   <div class="form-container" id="add-payment-form-container">
     <div class="form-popup">
       <span class="close">&times;</span>
-      <form action="/add_payment" method="get" id="add-payment-form">
-        <label for="amount">Enter payment amount:</label>
-        <input type="text" name="amount" id="amount" placeholder="Amount">
-        <div id="choose-involved">
-        </div>
-        <label for="choose-payer-select">Choose who paid:</label>
-        <select name="payer" id="choose-payer-select">
-          <option disabled selected>--</option>
-        </select>
-        <button type="submit">Submit</button>
+      <form action="/add_payment" method="post" id="add-payment-form">
       </form>
     </div>
   </div>

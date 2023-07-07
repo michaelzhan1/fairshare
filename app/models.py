@@ -14,7 +14,7 @@ class Payments(db.Model):
     amount = db.Column(db.Float, nullable=False)
     payer = db.Column(db.String(50))
     payer_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
-    payees = db.Column(db.String, nullable=False)   # json string
+    involved = db.Column(db.String, nullable=False)   # comma separated string of names
 
 
 with app.app_context():

@@ -18,16 +18,18 @@ def add_person():
     return redirect('/')
 
 
-@app.route('/add_payment', methods=['POST', 'GET'])
+@app.route('/add_payment', methods=['POST'])
 def add_payment():
     if request.method == 'POST':
-        print(request.form)
         amount = float(request.form['amount'])
         payer = request.form['payer']
         involved = request.form.getlist('involved')
-        print(involved)
-    return 'test'
-    # return redirect('/')
+        involved_string = ','.join(involved)
+        payer_id = db.session.query(People.id).filter_by(name=payer).first()[0]
+        payment = Payments(amount=amount, payer=payer, payer_id=payer_id, involved=involved_string)
+        db.session.add(payment)
+        db.session.commit()        
+    return redirect('/')
 
 
 @app.route('/get_people', methods=['GET'])
