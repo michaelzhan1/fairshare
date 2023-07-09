@@ -17,20 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const addPersonForm = document.getElementById('add-person-form');
 
 
-  // functions
-  async function getPeople() {
-    let response = await fetch('/get_people', {method: 'POST'});
-    let data = await response.json();
-    return data.names;
-  }
-
-  async function getDebts() {
-    let response = await fetch('/calculate', {method: 'POST'});
-    let data = await response.json();
-    return data.debts;
-  }
-
-
   // populate choose involved checklist
   function populateChecklistWithPeople(element) {
     getPeople().then(people => {
