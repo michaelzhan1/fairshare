@@ -80,6 +80,12 @@ def _simplify(matrix: np.ndarray) -> np.ndarray:
     new_matrix = np.zeros_like(matrix)
     for nperson, pperson, amt in global_best_transactions:
         new_matrix[nperson, pperson] += amt
+    
+    # flip to upper triangular
+    for i in range(new_matrix.shape[0]):
+        for j in range(i + 1, new_matrix.shape[1]):
+            new_matrix[i, j] -= new_matrix[j, i]
+            new_matrix[j, i] = 0
     return new_matrix
         
     
@@ -151,17 +157,22 @@ def calculate_debts(persons: List[str], expenses: List[float], paid_by: List[str
     debts = []
     for i in range(n):
         for j in range(i + 1, n):
-            if debt_matrix[i, j] != 0:
+            if debt_matrix[i, j] > 0:
                 debts.append([persons[i], persons[j], debt_matrix[i, j]])
+            elif debt_matrix[i, j] < 0:
+                debts.append([persons[j], persons[i], -debt_matrix[i, j]])
     return debts
 
 
 def main():
-    persons = ["A", "B", "C", "D", "E", "F"]
-    expenses = [6, 2, 12, 8, 22]
-    paid_by = ["D", "D", "E", 'E', 'F']
-    involved = [["A", "D"], ["B", "D"], ['B', 'E'], ['C', 'E'], ['C', 'F']]
-    debts = calculate_debts(persons, expenses, paid_by, involved)
+    persons = ['a', 'b', 'c']
+    info = [[2.0, 4.0], ['b', 'a'], [['a', 'b', 'c'], ['a', 'b']]]
+    print(_calculate(persons, info[0], info[1], info[2]))
+    debts = calculate_debts(persons, *info)
+    # expenses = [6, 2, 12, 8, 22]
+    # paid_by = ["D", "D", "E", 'E', 'F']
+    # involved = [["A", "D"], ["B", "D"], ['B', 'E'], ['C', 'E'], ['C', 'F']]
+    # debts = calculate_debts(persons, expenses, paid_by, involved)
     for f, t, amt in debts:
         print(f"{f} owes {t} ${amt:.2f}")
 

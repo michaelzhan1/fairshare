@@ -1,5 +1,6 @@
 from app import app
 from app.models import People, Payments, db
+from app.calculate import calculate_debts
 from flask import render_template, redirect, request, jsonify
 
 
@@ -32,7 +33,19 @@ def add_payment():
     return redirect('/')
 
 
-@app.route('/get_people', methods=['GET'])
+@app.route('/get_people', methods=['POST'])
 def get_people():
     people = db.session.query(People.name).all()
     return jsonify(names=[p[0] for p in people])
+
+
+@app.route('/calculate', methods=['GET'])
+def calculate():
+    raw_people = db.session.query(People.name).all()
+    people = [p[0] for p in raw_people]
+
+    raw_payment_info = db.session.query(Payments.amount, Payments.payer, Payments.involved).all()
+    payment_info = list(zip(*raw_payment_info))
+    payment_info[2] = tuple(map(lambda x: x.split(','), payment_info[2]))
+    debts = calculate_debts(people, *payment_info)
+    return jsonify(debts=debts)
