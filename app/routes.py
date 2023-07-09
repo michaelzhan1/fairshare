@@ -39,6 +39,12 @@ def get_people():
     return jsonify(names=[p[0] for p in people])
 
 
+@app.route('/get_payments', methods=['POST'])
+def get_payments():
+    payments = db.session.query(Payments.amount, Payments.payer, Payments.involved).all()
+    return jsonify(payments=[{'amount': p[0], 'payer': p[1], 'involved': p[2]} for p in payments])
+
+
 @app.route('/calculate', methods=['POSt'])
 def calculate():
     raw_people = db.session.query(People.name).all()

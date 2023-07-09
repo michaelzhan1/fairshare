@@ -70,3 +70,12 @@ body {
 #calculate-body p {
     margin-bottom: 5px;
 }
+
+.custom-checkbox {
+    opacity: 1;
+    pointer-events: none;
+}
+
+.highlight {
+    background-color: #4CAF50;
+}
