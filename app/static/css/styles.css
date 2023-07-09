@@ -62,3 +62,11 @@ body {
     margin-top: 15px;
     margin-bottom: 0;
 }
+
+#calculate-header {
+    margin-bottom: 15px;
+}
+
+#calculate-body p {
+    margin-bottom: 5px;
+}

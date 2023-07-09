@@ -2,10 +2,15 @@ document.addEventListener('DOMContentLoaded', function() {
   // buttons
   const newPaymentBtn = document.getElementById('new-payment-btn');
   const newPersonBtn = document.getElementById('new-person-btn');
+  const calculateBtn = document.getElementById('calculate-btn');
 
   // pop up form containers
   const addPaymentFormContainer = document.getElementById('add-payment-form-container');
   const addPersonFormContainer = document.getElementById('add-person-form-container');
+
+  // Calculate stuff
+  const calculateContainer = document.getElementById('calculate-container');
+  const calculateBody = document.getElementById('calculate-body');
 
   // forms
   const addPaymentForm = document.getElementById('add-payment-form');
@@ -17,6 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let response = await fetch('/get_people', {method: 'POST'});
     let data = await response.json();
     return data.names;
+  }
+
+  async function getDebts() {
+    let response = await fetch('/calculate', {method: 'POST'});
+    let data = await response.json();
+    return data.debts;
   }
 
 
@@ -119,6 +130,21 @@ document.addEventListener('DOMContentLoaded', function() {
     addPersonFormContainer.style.display = 'block';
   });
 
+  // Calculate button
+  calculateBtn.addEventListener('click', function() {
+    calculateContainer.style.display = 'block';
+    calculateBody.innerHTML = '<p class="calculateHeader"><strong>Who owes who how much:</strong></p>';
+    getDebts().then(debts => {
+      for(let i = 0; i < debts.length; i++) {
+        let from = debts[i][0];
+        let to = debts[i][1];
+        let amount = debts[i][2].toFixed(2);
+        calculateBody.innerHTML += `<p><strong>${from}</strong> owes <strong>${to}</strong> $${amount}</p>`;
+      }
+    });
+  });
+
+
   // Close forms
   addPaymentFormContainer.addEventListener('click', function(e) {
     let formPopup = addPaymentFormContainer.querySelector('.form-popup');
@@ -131,6 +157,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let formPopup = addPersonFormContainer.querySelector('.form-popup');
     if (e.target.classList.contains('close') || !formPopup.contains(e.target)) {
       addPersonFormContainer.style.display = 'none';
+    }
+  });
+
+  calculateContainer.addEventListener('click', function(e) {
+    let formPopup = calculateContainer.querySelector('.form-popup');
+    if (e.target.classList.contains('close') || !formPopup.contains(e.target)) {
+      calculateContainer.style.display = 'none';
     }
   });
 

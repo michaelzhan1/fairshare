@@ -39,7 +39,7 @@ def get_people():
     return jsonify(names=[p[0] for p in people])
 
 
-@app.route('/calculate', methods=['GET'])
+@app.route('/calculate', methods=['POSt'])
 def calculate():
     raw_people = db.session.query(People.name).all()
     people = [p[0] for p in raw_people]
