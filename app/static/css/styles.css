@@ -1,6 +1,72 @@
-body {
-    background-color: #061173;
+/* General styling */
+* {
+    box-sizing: border-box;
+    font: sans-serif;
 }
+
+
+/* Styling for the header */
+body {
+    background-color: #EBF3E1;
+}
+
+header {
+    background-color: #7D9C8A;
+}
+
+#brand {
+    font-size: 2em;
+    font-weight: bold;
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+#brand:hover {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+#group-number-display {
+    color: #FFFFFF;
+    font-size: 1.1em;
+}
+
+#group-number-copyicon {
+    color: #FFFFFF;
+    font-size: 1.1em;
+}
+
+#new-group-button {
+    color: #FFFFFF;
+    font-size: 1.1em;
+    text-decoration: none;
+}
+
+#new-group-button:hover {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+
+/* Styling for the main content */
+#main-body-container {
+    margin-top: 80px;
+}
+
+#main-body-container > .row {
+    height: calc(100vh - 80px);
+}
+
+#button-container {
+    background-color: #D8E6C3;
+}
+
+.btn-custom {
+    background-color: #8BAE7D;
+    color: #FFFFFF;
+}
+
+
 
 .form-container {
     display: none; /* Hide the form by default */

@@ -15,6 +15,7 @@ class Payments(db.Model):
     payer = db.Column(db.String(50))
     payer_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
     involved = db.Column(db.String, nullable=False)   # comma separated string of names
+    date = db.Column(db.DateTime, default=db.func.current_timestamp())  # returns in 'Mon, 10 Jul 2023 15:26:26 GMT' format after jsonify
 
 
 with app.app_context():

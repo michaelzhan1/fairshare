@@ -41,8 +41,8 @@ def get_people():
 
 @app.route('/get_payments', methods=['POST'])
 def get_payments():
-    payments = db.session.query(Payments.amount, Payments.payer, Payments.involved).all()
-    return jsonify(payments=[{'amount': p[0], 'payer': p[1], 'involved': p[2]} for p in payments])
+    payments = db.session.query(Payments.amount, Payments.payer, Payments.involved, Payments.date).all()
+    return jsonify(payments=[{'amount': p[0], 'payer': p[1], 'involved': p[2], 'date': p[3]} for p in payments])
 
 
 @app.route('/calculate', methods=['POSt'])
