@@ -18,6 +18,20 @@ async function getPayments() {
 }
 
 
+async function getSinglePayment(id) {
+  let response = await fetch('/get_single_payment', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({"paymentid": id})
+  });
+  let data = await response.json();
+  return data.payment;
+}
+
+
 // populate choose involved checklist
 function populateChecklistWithPeople(element) {
   getPeople().then(people => {

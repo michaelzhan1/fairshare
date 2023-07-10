@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // pop up form containers
   const addPaymentFormContainer = document.getElementById('add-payment-form-container');
   const addPersonFormContainer = document.getElementById('add-person-form-container');
+  const editPaymentFormContainer = document.getElementById('edit-payment-form-container');
 
   // Calculate stuff
   const calculateContainer = document.getElementById('calculate-container');
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // forms
   const addPaymentForm = document.getElementById('add-payment-form');
   const addPersonForm = document.getElementById('add-person-form');
+  const editPaymentForm = document.getElementById('edit-payment-form');
 
   // payment display body
   const paymentContainer = document.getElementById('payment-container');
@@ -125,6 +127,140 @@ document.addEventListener('DOMContentLoaded', function() {
       calculateContainer.style.display = 'none';
     }
   });
+
+  editPaymentFormContainer.addEventListener('click', function(e) {
+    let formPopup = editPaymentFormContainer.querySelector('.form-popup');
+    if (e.target.classList.contains('close') || !formPopup.contains(e.target) || e.target.classList.contains('cancel-button')) {
+      editPaymentFormContainer.style.display = 'none';
+    }
+  });
+
+
+  // Open payment edit display
+  paymentContainer.addEventListener('click', function(e) {
+    if (e.target.classList.contains('edit-button')) {
+      editPaymentFormContainer.style.display = 'block';
+      let paymentid = e.target.parentElement.parentElement.dataset.paymentid;
+      console.log(paymentid);
+
+      getSinglePayment(paymentid).then(payment => {
+        let descriptionValue = payment.description;
+        let amountValue = payment.amount;
+        let payerValue = payment.payer;
+        let involvedValue = payment.involved;
+
+        editPaymentFormContainer.style.display = 'block';
+        editPaymentForm.innerHTML = '';
+
+        let description = document.createElement('input');
+        description.type = 'text';
+        description.name = 'description';
+        description.id = 'payment-description';
+        description.placeholder = 'Description (max 100 chars)';
+        description.required = true;
+        description.value = descriptionValue;
+
+        let descriptionLabel = document.createElement('label');
+        descriptionLabel.htmlFor = description.id;
+        descriptionLabel.textContent = 'Edit description:';
+
+        let paymentAmount = document.createElement('input');
+        paymentAmount.type = 'number';
+        paymentAmount.name = 'amount';
+        paymentAmount.id = 'payment-amount';
+        paymentAmount.placeholder = 'Amount';
+        paymentAmount.required = true;
+        paymentAmount.step = '0.01';
+        paymentAmount.min = '0.01';
+        paymentAmount.value = amountValue;
+
+        let paymentAmountLabel = document.createElement('label');
+        paymentAmountLabel.htmlFor = paymentAmount.id;
+        paymentAmountLabel.textContent = 'Edit amount:';
+
+        let chooseInvolved = document.createElement('fieldset');
+        chooseInvolved.id = 'choose-involved';
+        
+        getPeople().then(people => {
+          chooseInvolved.innerHTML = '<legend>Select people involved in payment:</legend>';
+          let i = 0;
+          people.forEach(person => {
+            let option = document.createElement('input');
+            option.type = 'checkbox';
+            option.id = `person${i++}`;
+            option.name = 'involved';
+            option.value = person;
+            if (involvedValue.includes(person)) {
+              option.checked = true;
+            }
+            
+            chooseInvolved.appendChild(option);
+      
+            let label = document.createElement('label');
+            label.htmlFor = option.id;
+            label.textContent = person;
+            chooseInvolved.appendChild(label);
+      
+            let br = document.createElement('br');
+            chooseInvolved.appendChild(br);
+          });
+        });
+
+        let choosePayer = document.createElement('select');
+        choosePayer.name = 'payer';
+        choosePayer.id = 'choose-payer';
+        choosePayer.required = true;
+
+        let choosePayerLabel = document.createElement('label');
+        choosePayerLabel.htmlFor = choosePayer.id;
+        choosePayerLabel.textContent = 'Payer: ';
+
+        let involved = chooseInvolved.querySelectorAll('input:checked');
+        involved.forEach(person => {
+          let option = document.createElement('option');
+          option.value = person.value;
+          option.textContent = person.value;
+          element.appendChild(option);
+          if (payerValue === person.value) {
+            option.selected = true;
+          }
+        });
+
+        chooseInvolved.addEventListener('change', function() {
+          populatePayerDropdown(choosePayer, chooseInvolved); //
+        });
+
+        let submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.textContent = 'Submit';
+
+        let cancelBtn = document.createElement('button');
+        cancelBtn.classList.add('cancel-button');
+        cancelBtn.textContent = 'Cancel';
+
+        editPaymentForm.appendChild(descriptionLabel);
+        editPaymentForm.appendChild(description);
+        editPaymentForm.appendChild(paymentAmountLabel);
+        editPaymentForm.appendChild(document.createElement('br'));
+        editPaymentForm.appendChild(paymentAmount);
+        editPaymentForm.appendChild(chooseInvolved);
+        editPaymentForm.appendChild(choosePayerLabel);
+        editPaymentForm.appendChild(document.createElement('br'));
+        editPaymentForm.appendChild(choosePayer);
+        editPaymentForm.appendChild(submitBtn);
+        editPaymentForm.appendChild(cancelBtn);
+      });
+    }
+
+    // LOGIC FLOW:
+    // 1. add data field to parent of parent of edit, which should be the div container for that row
+    // 2. in the data field, store the id of the payment, from the database
+    // 3. when either edit or see details is clicked, get the data of that single id (new route)
+    // 3.5 the form can look very similar to newpayment for edit
+    // 3.5.1 The see details can be similar, but with just a text field for the description and amount and who was paid for
+    // 4. depending on whether edit or see details was clicked, create 2 new routes, one for each to do the update or delete task
+  });
+
 
 
   // Validate person submission

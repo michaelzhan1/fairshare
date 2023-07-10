@@ -3,6 +3,8 @@ const container = document.getElementById('payment-container')
 window.addEventListener('load', function() {
   getPayments().then(payments => {
     payments.forEach(payment => {
+      let id = payment.id;
+
       let date_array = payment.date.split(' ');
       let month = date_array[2];
       let day = date_array[1];
@@ -13,7 +15,7 @@ window.addEventListener('load', function() {
 
       let html = `
         <div class="container">
-          <div class="row">
+          <div class="row" data-paymentid="${id}">
             <div class="col-1 date-display d-flex flex-column justify-content-center align-items-start">
               <p>${month}<br>${day}</p>
             </div>
