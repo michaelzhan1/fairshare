@@ -25,8 +25,8 @@ window.addEventListener('load', function() {
               <p>$${amount}</p>
             </div>
             <div class="col-2 options-display d-flex flex-column justify-content-center align-items-center">
-              <a href="/">Edit</a>
-              <a href="/">See details</a>
+              <a href="#" class="edit-button">Edit</a>
+              <a href="#" class="details-button">See details</a>
             </div>
           </div>
         </div>
