@@ -157,8 +157,18 @@ header {
     box-sizing: border-box;
 }
 
-.form-container button {
+.form-container button[type=submit] {
     background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.form-container .cancel-button {
+    background-color: #e81f17;
     color: white;
     padding: 12px 20px;
     border: none;

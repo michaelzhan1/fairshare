@@ -24,11 +24,31 @@ async function getSinglePayment(id) {
     mode: 'cors',
     headers: {
       "Content-Type": "application/json",
+      "Accept": "application/json"
     },
     body: JSON.stringify({"paymentid": id})
   });
   let data = await response.json();
   return data.payment;
+}
+
+
+async function updatePayment(paymentid, payment) {
+  await fetch('/edit_payment', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({"paymentid": paymentid, "payment": payment})
+  }).then(response => {
+    if (response.status == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 }
 
 

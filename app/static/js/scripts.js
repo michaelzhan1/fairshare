@@ -141,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target.classList.contains('edit-button')) {
       editPaymentFormContainer.style.display = 'block';
       let paymentid = e.target.parentElement.parentElement.dataset.paymentid;
-      console.log(paymentid);
 
       getSinglePayment(paymentid).then(payment => {
         let descriptionValue = payment.description;
@@ -215,13 +214,12 @@ document.addEventListener('DOMContentLoaded', function() {
         choosePayerLabel.htmlFor = choosePayer.id;
         choosePayerLabel.textContent = 'Payer: ';
 
-        let involved = chooseInvolved.querySelectorAll('input:checked');
-        involved.forEach(person => {
+        involvedValue.forEach(person => {
           let option = document.createElement('option');
-          option.value = person.value;
-          option.textContent = person.value;
-          element.appendChild(option);
-          if (payerValue === person.value) {
+          option.value = person;
+          option.textContent = person;
+          choosePayer.appendChild(option);
+          if (payerValue === person) {
             option.selected = true;
           }
         });
@@ -232,11 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let submitBtn = document.createElement('button');
         submitBtn.type = 'submit';
-        submitBtn.textContent = 'Submit';
-
-        let cancelBtn = document.createElement('button');
-        cancelBtn.classList.add('cancel-button');
-        cancelBtn.textContent = 'Cancel';
+        submitBtn.textContent = 'Confirm';
 
         editPaymentForm.appendChild(descriptionLabel);
         editPaymentForm.appendChild(description);
@@ -248,7 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
         editPaymentForm.appendChild(document.createElement('br'));
         editPaymentForm.appendChild(choosePayer);
         editPaymentForm.appendChild(submitBtn);
-        editPaymentForm.appendChild(cancelBtn);
+
+        editPaymentForm.dataset.paymentid = paymentid;
       });
     }
 
@@ -259,6 +254,34 @@ document.addEventListener('DOMContentLoaded', function() {
     // 3.5 the form can look very similar to newpayment for edit
     // 3.5.1 The see details can be similar, but with just a text field for the description and amount and who was paid for
     // 4. depending on whether edit or see details was clicked, create 2 new routes, one for each to do the update or delete task
+  });
+
+  // Handle payment edit submission
+  editPaymentForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    let paymentid = e.target.dataset.paymentid;
+    console.log(e.target);
+    console.log(paymentid);
+    let description = document.getElementById('payment-description').value;
+    let amount = document.getElementById('payment-amount').value;
+    let involved = [];
+    let checkboxes = document.querySelectorAll('#choose-involved input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        involved.push(checkbox.value);
+      }
+    });
+    let payer = document.getElementById('choose-payer').value;
+    let payment = {
+      description: description,
+      amount: amount,
+      involved: involved,
+      payer: payer
+    };
+    updatePayment(paymentid, payment).then(() => {
+      editPaymentFormContainer.style.display = 'none';
+      location.reload();
+    });
   });
 
 

@@ -34,6 +34,28 @@ def add_payment():
     return redirect('/')
 
 
+@app.route('/edit_payment', methods=['POST'])
+def edit_payment():
+    if request.method == 'POST':
+        data = request.get_json()
+        payment_data = data['payment']
+        description = payment_data['description']
+        amount = float(payment_data['amount'])
+        payer = payment_data['payer']
+        involved_string = ','.join(payment_data['involved'])
+
+        print(data)
+        payment_id = data['paymentid']
+        payment = Payments.query.filter_by(id=payment_id).first()
+        payment.description = description
+        payment.amount = amount
+        payment.payer = payer
+        payment.involved = involved_string
+        db.session.commit()
+    return redirect('/')
+
+
+
 @app.route('/get_people', methods=['POST'])
 def get_people():
     people = db.session.query(People.name).all()
@@ -48,15 +70,14 @@ def get_payments():
 
 @app.route('/get_single_payment', methods=['POST'])
 def get_single_payment():
-    print(request)
-    # payment_id = request.form
-    # payment = db.session.query(Payments.amount, Payments.payer, Payments.involved, Payments.date, Payments.description, Payments.id).filter_by(id=payment_id).first()
-    # payment[2] = payment[2].split(',')
-    # return jsonify(payment={'amount': payment[0], 'payer': payment[1], 'involved': payment[2], 'date': payment[3], 'description': payment[4], 'id': payment[5]})
-    return jsonify(payment={'amount': 0, 'payer': '', 'involved': [], 'date': '', 'description': '', 'id': 0})
+    data = request.get_json()
+    print(data)
+    payment_id = data['paymentid']
+    payment = db.session.query(Payments.amount, Payments.payer, Payments.involved, Payments.date, Payments.description, Payments.id).filter_by(id=payment_id).first()
+    return jsonify(payment={'amount': payment[0], 'payer': payment[1], 'involved': payment[2].split(','), 'date': payment[3], 'description': payment[4], 'id': payment[5]})
 
 
-@app.route('/calculate', methods=['POSt'])
+@app.route('/calculate', methods=['POST'])
 def calculate():
     raw_people = db.session.query(People.name).all()
     people = [p[0] for p in raw_people]
