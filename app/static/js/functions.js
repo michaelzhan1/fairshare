@@ -52,6 +52,25 @@ async function updatePayment(paymentid, payment) {
 }
 
 
+async function deletePayment(paymentid) {
+  await fetch('/delete_payment', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({"paymentid": paymentid})
+  }).then(response => {
+    if (response.status == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+}
+
+
 // populate choose involved checklist
 function populateChecklistWithPeople(element) {
   getPeople().then(people => {

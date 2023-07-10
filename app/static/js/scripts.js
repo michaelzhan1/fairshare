@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const addPaymentFormContainer = document.getElementById('add-payment-form-container');
   const addPersonFormContainer = document.getElementById('add-person-form-container');
   const editPaymentFormContainer = document.getElementById('edit-payment-form-container');
+  const deleteFormContainer = document.getElementById('delete-form-container');
 
   // Calculate stuff
   const calculateContainer = document.getElementById('calculate-container');
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const addPaymentForm = document.getElementById('add-payment-form');
   const addPersonForm = document.getElementById('add-person-form');
   const editPaymentForm = document.getElementById('edit-payment-form');
+  const deleteForm = document.getElementById('delete-form');
 
   // payment display body
   const paymentContainer = document.getElementById('payment-container');
@@ -135,6 +137,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  deleteFormContainer.addEventListener('click', function(e) {
+    let formPopup = deleteFormContainer.querySelector('.form-popup');
+    if (e.target.classList.contains('close') || !formPopup.contains(e.target) || e.target.classList.contains('cancel-button')) {
+      deleteFormContainer.style.display = 'none';
+    }
+  });
+
 
   // Open payment edit display
   paymentContainer.addEventListener('click', function(e) {
@@ -246,15 +255,24 @@ document.addEventListener('DOMContentLoaded', function() {
         editPaymentForm.dataset.paymentid = paymentid;
       });
     }
-
-    // LOGIC FLOW:
-    // 1. add data field to parent of parent of edit, which should be the div container for that row
-    // 2. in the data field, store the id of the payment, from the database
-    // 3. when either edit or see details is clicked, get the data of that single id (new route)
-    // 3.5 the form can look very similar to newpayment for edit
-    // 3.5.1 The see details can be similar, but with just a text field for the description and amount and who was paid for
-    // 4. depending on whether edit or see details was clicked, create 2 new routes, one for each to do the update or delete task
   });
+
+  // Delete payment with confirmation popup
+  paymentContainer.addEventListener('click', function(e) {
+    if (e.target.classList.contains('delete-button')) {
+      deleteFormContainer.style.display = 'block';
+      let paymentid = e.target.parentElement.parentElement.dataset.paymentid;
+      deleteForm.dataset.paymentid = paymentid;
+
+      let paymentDescription = e.target.parentElement.parentElement.querySelector('.desc-display').textContent;
+      deleteForm.innerHTML = `
+        <p>Are you sure you want to delete payment "${paymentDescription}"?</p>
+        <button class="confirm-delete-button">Yes</button>
+        <button class="cancel-button" type="button">No</button>
+      `;
+    }
+  });
+
 
   // Handle payment edit submission
   editPaymentForm.addEventListener('submit', function(e) {
@@ -280,6 +298,16 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     updatePayment(paymentid, payment).then(() => {
       editPaymentFormContainer.style.display = 'none';
+      location.reload();
+    });
+  });
+
+  // Handle payment deletion
+  deleteForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    let paymentid = e.target.dataset.paymentid;
+    deletePayment(paymentid).then(() => {
+      deleteFormContainer.style.display = 'none';
       location.reload();
     });
   });

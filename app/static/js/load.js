@@ -28,7 +28,7 @@ window.addEventListener('load', function() {
             </div>
             <div class="col-2 options-display d-flex flex-column justify-content-center align-items-center">
               <a href="#" class="edit-button">Edit</a>
-              <a href="#" class="details-button">See details</a>
+              <a href="#" class="delete-button">Delete</a>
             </div>
           </div>
         </div>

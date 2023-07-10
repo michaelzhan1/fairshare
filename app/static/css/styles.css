@@ -167,11 +167,20 @@ header {
     margin-top: 10px;
 }
 
-.form-container .cancel-button {
+.form-container .confirm-delete-button {
     background-color: #e81f17;
     color: white;
     padding: 12px 20px;
     border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.form-container .cancel-button {
+    background-color: #FFFFFF;
+    color: #000000;
+    padding: 12px 20px;
     cursor: pointer;
     width: 100%;
     margin-top: 10px;

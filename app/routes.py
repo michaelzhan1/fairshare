@@ -55,6 +55,17 @@ def edit_payment():
     return redirect('/')
 
 
+@app.route('/delete_payment', methods=['POST'])
+def delete_payment():
+    if request.method == 'POST':
+        data = request.get_json()
+        payment_id = data['paymentid']
+        payment = Payments.query.filter_by(id=payment_id).first()
+        db.session.delete(payment)
+        db.session.commit()
+    return redirect('/')
+
+
 
 @app.route('/get_people', methods=['POST'])
 def get_people():
