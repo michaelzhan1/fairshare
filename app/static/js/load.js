@@ -14,28 +14,25 @@ window.addEventListener('load', function() {
       let html = `
         <div class="container">
           <div class="row">
-            <div class="col-1">
-              <p>${month}</p>
-              <p>${day}</p>
+            <div class="col-1 date-display d-flex flex-column justify-content-center align-items-start">
+              <p>${month}<br>${day}</p>
             </div>
-            <div class="col-8">
-              <p>${description}</p>
-              <p>Paid by ${payer}</p>
+            <div class="col-7 info-display d-flex flex-column justify-content-center align-items-start">
+              <p class="desc-display">${description}</p>
+              <p class="payer-display">Paid by ${payer}</p>
             </div>
-            <div class="col-2">
+            <div class="col-2 amt-display d-flex flex-column justify-content-center align-items-end">
               <p>$${amount}</p>
             </div>
-            <div class="col-1">
+            <div class="col-2 options-display d-flex flex-column justify-content-center align-items-center">
               <a href="/">Edit</a>
               <a href="/">See details</a>
             </div>
           </div>
         </div>
       `
-      if (container.children.length > 0) {
-        container.appendChild(document.createElement('hr'));
-      }
       container.innerHTML += html;
+      container.appendChild(document.createElement('hr'));
     });
   });
 });

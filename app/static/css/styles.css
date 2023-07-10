@@ -66,6 +66,55 @@ header {
     color: #FFFFFF;
 }
 
+#payment-container {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: calc(100vh - 150px);
+}
+
+#payment-container hr {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#payment-container p {
+    margin-bottom: 0;
+}
+
+#payment-container .date-display {
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+#payment-container .desc-display {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+#payment-container .payer-display {
+    text-align: center;
+    font-size: 0.9em;
+    margin-bottom: 0;
+}
+
+#payment-container .amt-display {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 0;
+}
+
+#payment-container .options-display {
+    text-align: center;
+}
+
+
+
+
+
 
 
 .form-container {
