@@ -22,12 +22,13 @@ def add_person():
 @app.route('/add_payment', methods=['POST'])
 def add_payment():
     if request.method == 'POST':
+        description = request.form['description']
         amount = float(request.form['amount'])
         payer = request.form['payer']
         involved = request.form.getlist('involved')
         involved_string = ','.join(involved)
         payer_id = db.session.query(People.id).filter_by(name=payer).first()[0]
-        payment = Payments(amount=amount, payer=payer, payer_id=payer_id, involved=involved_string)
+        payment = Payments(description=description, amount=amount, payer=payer, payer_id=payer_id, involved=involved_string)
         db.session.add(payment)
         db.session.commit()        
     return redirect('/')
@@ -41,8 +42,8 @@ def get_people():
 
 @app.route('/get_payments', methods=['POST'])
 def get_payments():
-    payments = db.session.query(Payments.amount, Payments.payer, Payments.involved, Payments.date).all()
-    return jsonify(payments=[{'amount': p[0], 'payer': p[1], 'involved': p[2], 'date': p[3]} for p in payments])
+    payments = db.session.query(Payments.amount, Payments.payer, Payments.involved, Payments.date, Payments.description).all()
+    return jsonify(payments=[{'amount': p[0], 'payer': p[1], 'involved': p[2], 'date': p[3], 'description': p[4]} for p in payments])
 
 
 @app.route('/calculate', methods=['POSt'])

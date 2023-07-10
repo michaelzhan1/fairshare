@@ -1,44 +1,41 @@
-const table = document.getElementById('table');
+const container = document.getElementById('payment-container')
 
 window.addEventListener('load', function() {
-  people = getPeople();
-  // create a header row for the table with the names of the people
-  people.then(people => {
-    let headerRow = document.createElement('tr');
-    let headerCell = document.createElement('th');
-    headerCell.textContent = 'Amount';
-    headerRow.appendChild(headerCell);
-    people.forEach(person => {
-      headerCell = document.createElement('th');
-      headerCell.textContent = person;
-      headerRow.appendChild(headerCell);
-    });
-    table.appendChild(headerRow);
-  });
-
-  // create a row for each payment with the amount, and checkboxes for each person. check the boxes if the person was involved in the payment, and disable them. highlight the cell if the person paid for the payment.
   getPayments().then(payments => {
     payments.forEach(payment => {
-      let row = document.createElement('tr');
-      let cell = document.createElement('td');
-      cell.textContent = `$${payment.amount.toFixed(2)}`;
-      row.appendChild(cell);
-      people.then(people => {
-        people.forEach(person => {
-          cell = document.createElement('td');
-          let checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.disabled = true;
-          checkbox.checked = payment.involved.includes(person);
-          checkbox.classList.add('custom-checkbox');
-          if (payment.payer == person) {
-            cell.classList.add('highlight');
-          }
-          cell.appendChild(checkbox);
-          row.appendChild(cell);
-        });
-        table.appendChild(row);
-      });
+      let date_array = payment.date.split(' ');
+      let month = date_array[2];
+      let day = date_array[1];
+
+      let description = payment.description;
+      let amount = payment.amount.toFixed(2);
+      let payer = payment.payer;
+
+      let html = `
+        <div class="container">
+          <div class="row">
+            <div class="col-1">
+              <p>${month}</p>
+              <p>${day}</p>
+            </div>
+            <div class="col-8">
+              <p>${description}</p>
+              <p>Paid by ${payer}</p>
+            </div>
+            <div class="col-2">
+              <p>$${amount}</p>
+            </div>
+            <div class="col-1">
+              <a href="/">Edit</a>
+              <a href="/">See details</a>
+            </div>
+          </div>
+        </div>
+      `
+      if (container.children.length > 0) {
+        container.appendChild(document.createElement('hr'));
+      }
+      container.innerHTML += html;
     });
   });
 });

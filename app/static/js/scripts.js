@@ -64,6 +64,17 @@ document.addEventListener('DOMContentLoaded', function() {
     addPaymentFormContainer.style.display = 'block';
     addPaymentForm.innerHTML = '';
 
+    let description = document.createElement('input');
+    description.type = 'text';
+    description.name = 'description';
+    description.id = 'payment-description';
+    description.placeholder = 'Description (max 100 chars)';
+    description.required = true;
+
+    let descriptionLabel = document.createElement('label');
+    descriptionLabel.htmlFor = description.id;
+    descriptionLabel.textContent = 'Description:';
+
     let paymentAmount = document.createElement('input');
     paymentAmount.type = 'number';
     paymentAmount.name = 'amount';
@@ -99,14 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
     submitBtn.type = 'submit';
     submitBtn.textContent = 'Submit';
 
-    let lineBreak = document.createElement('br');
-
+    addPaymentForm.appendChild(descriptionLabel);
+    addPaymentForm.appendChild(description);
     addPaymentForm.appendChild(paymentAmountLabel);
+    addPaymentForm.appendChild(document.createElement('br'));
     addPaymentForm.appendChild(paymentAmount);
-    addPaymentForm.appendChild(lineBreak);
     addPaymentForm.appendChild(chooseInvolved);
     addPaymentForm.appendChild(choosePayerLabel);
-    addPaymentForm.appendChild(lineBreak);
+    addPaymentForm.appendChild(document.createElement('br'));
     addPaymentForm.appendChild(choosePayer);
     addPaymentForm.appendChild(submitBtn);
   });

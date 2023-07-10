@@ -11,6 +11,7 @@ class People(db.Model):
 
 class Payments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String)
     amount = db.Column(db.Float, nullable=False)
     payer = db.Column(db.String(50))
     payer_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
