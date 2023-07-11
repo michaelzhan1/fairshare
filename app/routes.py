@@ -42,7 +42,7 @@ def add_person():
         if groupid not in all_groups:
             return redirect('/')
         name = request.form['name']
-        person = People(name=name)
+        person = People(name=name, group_id=groupid)
         db.session.add(person)
         db.session.commit()
         return redirect(f'/g/{groupid}')

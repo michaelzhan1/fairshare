@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Copy group link to clipboard
   copyBtn.addEventListener('click', function() {
     temparea = document.createElement('textarea');
-    temparea.value = groupid;
+    temparea.value = window.location.href;
     document.body.appendChild(temparea);
     temparea.select();
     document.execCommand('copy');
