@@ -1,25 +1,32 @@
 // functions
-async function getPeople() {
-  let response = await fetch('/get_people', {method: 'POST'});
+async function getPeople(groupid) {
+  let response = await fetch('/api/get_people', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({"groupid": groupid}),
+  });
   let data = await response.json();
   return data.names;
 }
 
 async function getDebts() {
-  let response = await fetch('/calculate', {method: 'POST'});
+  let response = await fetch('/api/calculate', {method: 'POST'});
   let data = await response.json();
   return data.debts;
 }
 
 async function getPayments() {
-  let response = await fetch('/get_payments', {method: 'POST'});
+  let response = await fetch('/api/get_payments', {method: 'POST'});
   let data = await response.json();
   return data.payments;
 }
 
 
 async function getSinglePayment(id) {
-  let response = await fetch('/get_single_payment', {
+  let response = await fetch('/api/get_single_payment', {
     method: 'POST',
     mode: 'cors',
     headers: {
@@ -34,7 +41,7 @@ async function getSinglePayment(id) {
 
 
 async function updatePayment(paymentid, payment) {
-  await fetch('/edit_payment', {
+  await fetch('/api/edit_payment', {
     method: 'POST',
     mode: 'cors',
     headers: {
@@ -53,7 +60,7 @@ async function updatePayment(paymentid, payment) {
 
 
 async function deletePayment(paymentid) {
-  await fetch('/delete_payment', {
+  await fetch('/api/delete_payment', {
     method: 'POST',
     mode: 'cors',
     headers: {
@@ -73,7 +80,7 @@ async function deletePayment(paymentid) {
 
 // populate choose involved checklist
 function populateChecklistWithPeople(element) {
-  getPeople().then(people => {
+  getPeople(groupid).then(people => {
     element.innerHTML = '<legend>Select people involved in payment:</legend>';
     let i = 0;
     people.forEach(person => {

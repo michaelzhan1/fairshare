@@ -1,3 +1,9 @@
+// group id
+const currentURL = window.location.pathname;
+const groupid = currentURL.split('/').pop();
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
   // buttons
   const newPaymentBtn = document.getElementById('new-payment-btn');
@@ -30,6 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
     addPaymentFormContainer.style.display = 'block';
     addPaymentForm.innerHTML = '';
 
+    let group = document.createElement('input');
+    group.type = 'text';
+    group.name = 'group';
+    group.value = groupid;
+    group.style.display = 'none';
+
     let description = document.createElement('input');
     description.type = 'text';
     description.name = 'description';
@@ -56,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let chooseInvolved = document.createElement('fieldset');
     chooseInvolved.id = 'choose-involved';
-    populateChecklistWithPeople(chooseInvolved)
+    populateChecklistWithPeople(chooseInvolved, groupid)
 
     let choosePayer = document.createElement('select');
     choosePayer.name = 'payer';
@@ -189,7 +201,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let chooseInvolved = document.createElement('fieldset');
         chooseInvolved.id = 'choose-involved';
         
-        getPeople().then(people => {
+        console.log(groupid)
+        getPeople(groupid).then(people => {
           chooseInvolved.innerHTML = '<legend>Select people involved in payment:</legend>';
           let i = 0;
           people.forEach(person => {
@@ -322,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
       alert('Please enter a name');
       return;
     }
-    getPeople().then(people => {
+    getPeople(groupid).then(people => {
       if (people.includes(name)) {
         alert('That name already exists');
         return;
