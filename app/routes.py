@@ -30,6 +30,7 @@ def add_person():
         person = People(name=name)
         db.session.add(person)
         db.session.commit()
+        return redirect(f'/g/{groupid}')
     return redirect('/')
 
 
@@ -47,9 +48,10 @@ def add_payment():
         involved = request.form.getlist('involved')
         involved_string = ','.join(involved)
         payer_id = db.session.query(People.id).filter_by(name=payer).first()[0]
-        payment = Payments(groupd_id=groupid, description=description, amount=amount, payer=payer, payer_id=payer_id, involved=involved_string)
+        payment = Payments(group_id=groupid, description=description, amount=amount, payer=payer, payer_id=payer_id, involved=involved_string)
         db.session.add(payment)
         db.session.commit()        
+        return redirect(f'/g/{groupid}')
     return redirect('/')
 
 
@@ -63,7 +65,8 @@ def edit_payment():
         payer = payment_data['payer']
         involved_string = ','.join(payment_data['involved'])
 
-        print(data)
+        groupid = data['groupid']
+
         payment_id = data['paymentid']
         payment = Payments.query.filter_by(id=payment_id).first()
         payment.description = description
@@ -71,6 +74,7 @@ def edit_payment():
         payment.payer = payer
         payment.involved = involved_string
         db.session.commit()
+        return redirect(f'/g/{groupid}')
     return redirect('/')
 
 
@@ -82,6 +86,8 @@ def delete_payment():
         payment = Payments.query.filter_by(id=payment_id).first()
         db.session.delete(payment)
         db.session.commit()
+        groupid = data['groupid']
+        return redirect(f'/g/{groupid}')
     return redirect('/')
 
 
@@ -101,7 +107,14 @@ def get_people():
 
 @app.route('/api/get_payments', methods=['POST'])
 def get_payments():
-    payments = db.session.query(Payments.amount, Payments.payer, Payments.involved, Payments.date, Payments.description, Payments.id).all()
+    data = request.get_json()
+    groupid = data['groupid']
+    all_groups = db.session.query(Groups.group_id).distinct().all()
+    all_groups = [g[0] for g in all_groups]
+    if groupid not in all_groups:
+        return redirect('/')
+    
+    payments = db.session.query(Payments.amount, Payments.payer, Payments.involved, Payments.date, Payments.description, Payments.id).filter_by(group_id=groupid).all()
     return jsonify(payments=[{'amount': p[0], 'payer': p[1], 'involved': p[2], 'date': p[3], 'description': p[4], 'id': p[5]} for p in payments])
 
 
@@ -115,10 +128,16 @@ def get_single_payment():
 
 @app.route('/api/calculate', methods=['POST'])
 def calculate():
-    raw_people = db.session.query(People.name).all()
+    data = request.get_json()
+    groupid = data['groupid']
+    all_groups = db.session.query(Groups.group_id).distinct().all()
+    all_groups = [g[0] for g in all_groups]
+    if groupid not in all_groups:
+        return redirect('/')
+    raw_people = db.session.query(People.name).filter_by(group_id=groupid).all()
     people = [p[0] for p in raw_people]
 
-    raw_payment_info = db.session.query(Payments.amount, Payments.payer, Payments.involved).all()
+    raw_payment_info = db.session.query(Payments.amount, Payments.payer, Payments.involved).filter_by(group_id=groupid).all()
     payment_info = list(zip(*raw_payment_info))
     payment_info[2] = tuple(map(lambda x: x.split(','), payment_info[2]))
     debts = calculate_debts(people, *payment_info)

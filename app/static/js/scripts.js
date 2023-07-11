@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let group = document.createElement('input');
     group.type = 'text';
-    group.name = 'group';
+    group.name = 'groupid';
     group.value = groupid;
     group.style.display = 'none';
 
@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
     submitBtn.type = 'submit';
     submitBtn.textContent = 'Submit';
 
+    addPaymentForm.appendChild(group);
     addPaymentForm.appendChild(descriptionLabel);
     addPaymentForm.appendChild(description);
     addPaymentForm.appendChild(paymentAmountLabel);
@@ -109,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
   calculateBtn.addEventListener('click', function() {
     calculateContainer.style.display = 'block';
     calculateBody.innerHTML = '<p class="calculateHeader"><strong>Who owes who how much:</strong></p>';
-    getDebts().then(debts => {
+    getDebts(groupid).then(debts => {
       for(let i = 0; i < debts.length; i++) {
         let from = debts[i][0];
         let to = debts[i][1];
@@ -201,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let chooseInvolved = document.createElement('fieldset');
         chooseInvolved.id = 'choose-involved';
         
-        console.log(groupid)
         getPeople(groupid).then(people => {
           chooseInvolved.innerHTML = '<legend>Select people involved in payment:</legend>';
           let i = 0;
@@ -291,8 +291,6 @@ document.addEventListener('DOMContentLoaded', function() {
   editPaymentForm.addEventListener('submit', function(e) {
     e.preventDefault();
     let paymentid = e.target.dataset.paymentid;
-    console.log(e.target);
-    console.log(paymentid);
     let description = document.getElementById('payment-description').value;
     let amount = document.getElementById('payment-amount').value;
     let involved = [];
@@ -309,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
       involved: involved,
       payer: payer
     };
-    updatePayment(paymentid, payment).then(() => {
+    updatePayment(paymentid, payment, groupid).then(() => {
       editPaymentFormContainer.style.display = 'none';
       location.reload();
     });
@@ -319,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
   deleteForm.addEventListener('submit', function(e) {
     e.preventDefault();
     let paymentid = e.target.dataset.paymentid;
-    deletePayment(paymentid).then(() => {
+    deletePayment(paymentid, groupid).then(() => {
       deleteFormContainer.style.display = 'none';
       location.reload();
     });

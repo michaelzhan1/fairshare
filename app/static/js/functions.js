@@ -12,14 +12,28 @@ async function getPeople(groupid) {
   return data.names;
 }
 
-async function getDebts() {
-  let response = await fetch('/api/calculate', {method: 'POST'});
+async function getDebts(groupid) {
+  let response = await fetch('/api/calculate', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({"groupid": groupid})
+  });
   let data = await response.json();
   return data.debts;
 }
 
-async function getPayments() {
-  let response = await fetch('/api/get_payments', {method: 'POST'});
+async function getPayments(groupid) {
+  let response = await fetch('/api/get_payments', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({"groupid": groupid}),
+  });
   let data = await response.json();
   return data.payments;
 }
@@ -40,7 +54,7 @@ async function getSinglePayment(id) {
 }
 
 
-async function updatePayment(paymentid, payment) {
+async function updatePayment(paymentid, payment, groupid) {
   await fetch('/api/edit_payment', {
     method: 'POST',
     mode: 'cors',
@@ -48,7 +62,7 @@ async function updatePayment(paymentid, payment) {
       "Content-Type": "application/json",
       "Accept": "application/json"
     },
-    body: JSON.stringify({"paymentid": paymentid, "payment": payment})
+    body: JSON.stringify({"paymentid": paymentid, "payment": payment, "groupid": groupid})
   }).then(response => {
     if (response.status == 200) {
       return true;
@@ -59,7 +73,7 @@ async function updatePayment(paymentid, payment) {
 }
 
 
-async function deletePayment(paymentid) {
+async function deletePayment(paymentid, groupid) {
   await fetch('/api/delete_payment', {
     method: 'POST',
     mode: 'cors',
@@ -67,7 +81,7 @@ async function deletePayment(paymentid) {
       "Content-Type": "application/json",
       "Accept": "application/json"
     },
-    body: JSON.stringify({"paymentid": paymentid})
+    body: JSON.stringify({"paymentid": paymentid, "groupid": groupid})
   }).then(response => {
     if (response.status == 200) {
       return true;

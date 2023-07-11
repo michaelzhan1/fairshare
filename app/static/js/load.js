@@ -1,7 +1,7 @@
 const container = document.getElementById('payment-container')
 
 window.addEventListener('load', function() {
-  getPayments().then(payments => {
+  getPayments(groupid).then(payments => {
     payments.forEach(payment => {
       let id = payment.id;
 
