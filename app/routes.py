@@ -2,11 +2,26 @@ from app import app
 from app.models import People, Payments, Groups, db
 from app.calculate import calculate_debts
 from flask import render_template, redirect, request, jsonify
+from random import choice
+import string
 
 
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
+
+
+@app.route('/new_group')
+def new_group():
+    all_groups = db.session.query(Groups.group_id).distinct().all()
+    all_groups = [g[0] for g in all_groups]
+    new_group = ''.join(choice(string.ascii_lowercase) for i in range(6))
+    while new_group in all_groups:
+        new_group = ''.join(choice(string.ascii_lowercase) for i in range(6))
+    group = Groups(group_id=new_group)
+    db.session.add(group)
+    db.session.commit()
+    return redirect(f'/g/{new_group}')
 
 
 @app.route('/g/<group>', methods=['GET', 'POST'])

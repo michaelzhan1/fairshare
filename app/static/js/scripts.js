@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const newPaymentBtn = document.getElementById('new-payment-btn');
   const newPersonBtn = document.getElementById('new-person-btn');
   const calculateBtn = document.getElementById('calculate-btn');
+  const copyBtn = document.getElementById('copy-button');
 
   // pop up form containers
   const addPaymentFormContainer = document.getElementById('add-payment-form-container');
@@ -340,5 +341,17 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       addPersonForm.submit();
     });
+  });
+
+
+  // Copy group link to clipboard
+  copyBtn.addEventListener('click', function() {
+    temparea = document.createElement('textarea');
+    temparea.value = groupid;
+    document.body.appendChild(temparea);
+    temparea.select();
+    document.execCommand('copy');
+    document.body.removeChild(temparea);
+    alert('Group link copied to clipboard');
   });
 });
