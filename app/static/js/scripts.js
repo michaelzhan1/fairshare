@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
     choosePayer.name = 'payer';
     choosePayer.id = 'choose-payer';
     choosePayer.required = true;
-    choosePayer.innerHTML = '<option disabled selected>--</option>';
 
     let choosePayerLabel = document.createElement('label');
     choosePayerLabel.htmlFor = choosePayer.id;
@@ -181,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         description.placeholder = 'Description (max 100 chars)';
         description.required = true;
         description.value = descriptionValue;
+        description.maxLength = 100;
 
         let descriptionLabel = document.createElement('label');
         descriptionLabel.htmlFor = description.id;

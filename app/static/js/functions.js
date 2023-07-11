@@ -121,7 +121,7 @@ function populateChecklistWithPeople(element) {
 
 // populate choose payer dropdown
 function populatePayerDropdown(element, people) {
-  element.innerHTML = '<option disabled selected>--</option>';
+  element.innerHTML = '';
 
   let involved = people.querySelectorAll('input:checked');
   involved.forEach(person => {
