@@ -37,6 +37,10 @@ class Groups(db.Model):
     group_id = db.Column(db.String(6), nullable=False, unique=True)
 
 
+with app.app_context():
+    db.create_all()
+
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
