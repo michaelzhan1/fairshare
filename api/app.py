@@ -164,7 +164,3 @@ def calculate():
     payment_info[2] = tuple(map(lambda x: x.split(','), payment_info[2]))
     debts = calculate_debts(people, *payment_info)
     return jsonify(debts=debts)
-
-
-if __name__ == '__main__':
-    app.run()
