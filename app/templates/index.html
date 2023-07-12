@@ -3,9 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>FairShare</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="../static/css/index.css">
 </head>
 <body>
-  Hello world
+  <div class="d-flex flex-column main-header align-items-center justify-content-center">
+    <h1 class="text-center mt-3 mb-0">FairShare</h1>
+    <h2 class="text-center mb-4">Splitting expenses, simplified</h2>
+  </div>
+
+  <div class="container main-content">
+    <div class="row">
+      <div class="col-12 col-md-6 d-flex flex-column align-items-center justify-content-center">
+        <p class="caption text-center">Looking to start a group?</p>
+        <button class="btn btn-custom" id="new-group-button" type="button">Create a new group!</button>
+      </div>
+      <div class="col-12 col-md-6 d-flex flex-column align-items-center justify-content-center">
+        <p class="caption text-center">Already have a group?</p>
+        <input type="text" name="groupid" id="group-id-input" placeholder="Enter group ID" class="text-center" maxlength="6">
+        <button class="btn btn-custom" id="group-id-submit" type="submit">Go to group!</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="wrapper d-flex flex-column align-items-center justify-content-center">
+      <h3 class="text-center">What is FairShare?</h3>
+      <h4 class="text-center">
+        FairShare is an easy-to-use calculator that can help figure out how much you and your friends split a bunch of group expenses! Have a group of friends that you've been hanging out with for months and can't figure out how much you have to pay each other back? Just create a group, enter the people and the payments, and FairShare can calculate it all for you!
+      </h4>
+    </div>
+  </div>
+
+  <div class="footer d-flex flex-column align-items-center justify-content-end">
+    <p class="mb-0">Contact me:</p>
+    <a href="mailto:michaelzhan2001@gmail.com">michaelzhan2001@gmail.com</a>
+    <div class="contact-links">
+      <a href="https://github.com/michaelzhan2" class="d-inline"><i class="fa fa-github"></i></a>
+      <a href="https://www.linkedin.com/in/michaelzhan1/" class="d-inline"><i class="fa fa-linkedin"></i></a>
+    </div>
+  </div>
+
+
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  <!-- Custom JS -->
+  <script src="../static/js/index.js"></script>
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/938b14a27f.js" crossorigin="anonymous"></script>
 </body>
 </html>
