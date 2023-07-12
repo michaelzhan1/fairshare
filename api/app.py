@@ -1,16 +1,40 @@
 from flask import Flask
-from models import People, Payments, Groups, db
 from calculate import calculate_debts
 from flask import render_template, redirect, request, jsonify
 from random import choice
 import string
-from config import Config
+from flask_sqlalchemy import SQLAlchemy
+
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = Config.SQLALCHEMY_DATABASE_URI
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = Config.SQLALCHEMY_TRACK_MODIFICATIONS
-app.config['FLASK_ENV'] = Config.FLASK_ENV
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expensetrack.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['FLASK_ENV'] = 'production'
+
+
+db = SQLAlchemy(app)
+
+class People(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+
+
+class Payments(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), nullable=False)
+    description = db.Column(db.String)
+    amount = db.Column(db.Float, nullable=False)
+    payer = db.Column(db.String(50))
+    payer_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
+    involved = db.Column(db.String, nullable=False)   # comma separated string of names
+    date = db.Column(db.DateTime, default=db.func.current_timestamp())  # returns in 'Mon, 10 Jul 2023 15:26:26 GMT' format after jsonify
+
+
+class Groups(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.String(6), nullable=False, unique=True)
 
 
 @app.route('/', methods=['GET'])
