@@ -1,4 +1,5 @@
 {
+    "buildCommand": "pip install -r requirements.txt && cd api && flask run",
     "builds": [
         { "src": "api/app.py", "use": "@vercel/python" }
     ],
