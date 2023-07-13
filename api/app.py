@@ -8,9 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expensetrack.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['FLASK_ENV'] = 'production'
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://default:J8ZgCxfYB9bO@ep-divine-boat-313077.us-east-1.postgres.vercel-storage.com:5432/verceldb"
+# app.config['FLASK_ENV'] = 'production'
 
 
 db = SQLAlchemy(app)
