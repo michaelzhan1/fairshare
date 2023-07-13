@@ -14,15 +14,19 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://default:J8ZgCxfYB9bO@ep-di
 
 db = SQLAlchemy(app)
 
+class Groups(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.String(6), nullable=False, unique=True)
+
 class People(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), nullable=False)
+    group_id = db.Column(db.String(6), db.ForeignKey('groups.group_id'), nullable=False)
     name = db.Column(db.String(50), nullable=False)
 
 
 class Payments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), nullable=False)
+    group_id = db.Column(db.String(6), db.ForeignKey('groups.group_id'), nullable=False)
     description = db.Column(db.String)
     amount = db.Column(db.Float, nullable=False)
     payer = db.Column(db.String(50))
@@ -31,12 +35,9 @@ class Payments(db.Model):
     date = db.Column(db.DateTime, default=db.func.current_timestamp())  # returns in 'Mon, 10 Jul 2023 15:26:26 GMT' format after jsonify
 
 
-class Groups(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.String(6), nullable=False, unique=True)
-
-
 with app.app_context():
+    # db.reflect()
+    # db.drop_all()
     db.create_all()
 
 
