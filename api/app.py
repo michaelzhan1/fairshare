@@ -1,5 +1,5 @@
 from flask import Flask
-from calculate import calculate_debts
+from api.calculate import calculate_debts
 from flask import render_template, redirect, request, jsonify
 from random import choice
 import string
