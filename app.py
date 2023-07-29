@@ -4,12 +4,16 @@ from flask import render_template, redirect, request, jsonify
 from random import choice
 import string
 from flask_sqlalchemy import SQLAlchemy
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://default:J8ZgCxfYB9bO@ep-divine-boat-313077.us-east-1.postgres.vercel-storage.com:5432/verceldb"
-# app.config['FLASK_ENV'] = 'production'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['FLASK_ENV'] = 'production'
 
 
 db = SQLAlchemy(app)
