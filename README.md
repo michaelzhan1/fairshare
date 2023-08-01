@@ -1,3 +1,1 @@
-# FairShare
-Web app to calculate expenses among a group, built on Flask \
-[https://group-expense-tracker.vercel.app/](https://group-expense-tracker.vercel.app/)
+Hosted [here](https://fairshare-production.up.railway.app/), deployed on [Railway](railway.app). Built with base JS on a Flask and PostgreSQL backend.
